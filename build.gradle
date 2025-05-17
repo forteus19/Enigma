@@ -28,8 +28,6 @@ subprojects {
 	group = 'cuchaz'
 	version = '2.5.2'
 
-	version = version + (System.getenv("GITHUB_ACTIONS") ? "" : "+local")
-
 	java {
 		withSourcesJar()
 		sourceCompatibility = JavaVersion.VERSION_17
