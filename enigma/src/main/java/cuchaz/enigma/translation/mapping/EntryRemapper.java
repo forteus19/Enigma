@@ -59,12 +59,12 @@ public class EntryRemapper {
 	}
 
 	private void doPutMapping(ValidationContext vc, Entry<?> obfuscatedEntry, @Nonnull EntryMapping deobfMapping, boolean validateOnly) {
-		if (obfuscatedEntry instanceof FieldEntry) {
-			FieldEntry fieldEntry = (FieldEntry) obfuscatedEntry;
-			ClassEntry classEntry = fieldEntry.getParent();
-
-			mapRecordComponentGetter(vc, classEntry, fieldEntry, deobfMapping);
-		}
+//		if (obfuscatedEntry instanceof FieldEntry) {
+//			FieldEntry fieldEntry = (FieldEntry) obfuscatedEntry;
+//			ClassEntry classEntry = fieldEntry.getParent();
+//
+//			mapRecordComponentGetter(vc, classEntry, fieldEntry, deobfMapping);
+//		}
 
 		boolean renaming = !Objects.equals(getDeobfMapping(obfuscatedEntry).targetName(), deobfMapping.targetName());
 
@@ -90,32 +90,32 @@ public class EntryRemapper {
 	}
 
 	// A little bit of a hack to also map the getter method for record fields.
-	private void mapRecordComponentGetter(ValidationContext vc, ClassEntry classEntry, FieldEntry fieldEntry, EntryMapping fieldMapping) {
-		if (!jarIndex.getEntryIndex().getDefinition(classEntry).isRecord() || jarIndex.getEntryIndex().getFieldAccess(fieldEntry).isStatic()) {
-			return;
-		}
-
-		// Find all the methods in this record class
-		List<MethodEntry> classMethods = jarIndex.getEntryIndex().getMethods().stream().filter(entry -> classEntry.equals(entry.getParent())).toList();
-
-		MethodEntry methodEntry = null;
-
-		for (MethodEntry method : classMethods) {
-			// Find the matching record component getter via matching the names. TODO: Support when the record field and method names do not match
-			if (method.getName().equals(fieldEntry.getName()) && method.getDesc().toString().equals("()" + fieldEntry.getDesc())) {
-				methodEntry = method;
-				break;
-			}
-		}
-
-		if (methodEntry == null && fieldMapping != null) {
-			vc.raise(Message.UNKNOWN_RECORD_GETTER, fieldMapping.targetName());
-			return;
-		}
-
-		// Also remap the associated method, without the javadoc.
-		doPutMapping(vc, methodEntry, new EntryMapping(fieldMapping.targetName()), false);
-	}
+//	private void mapRecordComponentGetter(ValidationContext vc, ClassEntry classEntry, FieldEntry fieldEntry, EntryMapping fieldMapping) {
+//		if (!jarIndex.getEntryIndex().getDefinition(classEntry).isRecord() || jarIndex.getEntryIndex().getFieldAccess(fieldEntry).isStatic()) {
+//			return;
+//		}
+//
+//		// Find all the methods in this record class
+//		List<MethodEntry> classMethods = jarIndex.getEntryIndex().getMethods().stream().filter(entry -> classEntry.equals(entry.getParent())).toList();
+//
+//		MethodEntry methodEntry = null;
+//
+//		for (MethodEntry method : classMethods) {
+//			// Find the matching record component getter via matching the names. TODO: Support when the record field and method names do not match
+//			if (method.getName().equals(fieldEntry.getName()) && method.getDesc().toString().equals("()" + fieldEntry.getDesc())) {
+//				methodEntry = method;
+//				break;
+//			}
+//		}
+//
+//		if (methodEntry == null && fieldMapping != null) {
+//			vc.raise(Message.UNKNOWN_RECORD_GETTER, fieldMapping.targetName());
+//			return;
+//		}
+//
+//		// Also remap the associated method, without the javadoc.
+//		doPutMapping(vc, methodEntry, new EntryMapping(fieldMapping.targetName()), false);
+//	}
 
 	@Nonnull
 	public EntryMapping getDeobfMapping(Entry<?> entry) {
